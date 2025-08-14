@@ -6,6 +6,10 @@ import authRoutes from "./routes/auth.js";
 
 import productroutes from './routes/productroutes.js';
 import categoryroutes from './routes/categoryroutes.js';
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -29,7 +33,10 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use("/api/auth", authRoutes);
 app.use('/api/products', productroutes);
 app.use('/api/categories', categoryroutes);
-
+app.use(express.static(path.join(__dirname, "frontend/build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
+});
 const PORT = process.env.PORT || 5006;
 
 app.listen(PORT, () => {
